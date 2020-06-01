@@ -1,0 +1,35 @@
+{
+  "name": "street-manager-event-subscriber",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rimraf dist",
+    "lint": "tslint --project tslint.json --exclude 'prod_node_modules/**' --exclude 'node_modules/**'",
+    "lint-fix": "tslint --project tslint.json --exclude 'prod_node_modules/**' --exclude 'node_modules/**' --fix",
+    "test": "TZ=UTC npm run lint && nyc npm run test-unit",
+    "test-unit": "TZ=UTC mocha 'tests/unit/**/*.ts' --require ts-node/register",
+    "local": "npm run build && sam local invoke --docker-network host"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "inversify": "^5.0.1",
+    "moment-timezone": "^0.5.31",
+    "reflect-metadata": "^0.1.13",
+    "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#a13539636003f61893cd33b19464252486d650d2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.51",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.11.1",
+    "chai": "^4.2.0",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
+    "rimraf": "^3.0.2",
+    "sinon": "^9.0.2",
+    "ts-mockito": "^2.5.0",
+    "ts-node": "^8.8.2",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3"
+  }
+}
