@@ -14,7 +14,6 @@
   "license": "MIT",
   "dependencies": {
     "inversify": "^5.0.1",
-    "moment-timezone": "^0.5.31",
     "reflect-metadata": "^0.1.13",
     "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#a13539636003f61893cd33b19464252486d650d2"
   },
