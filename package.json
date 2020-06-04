@@ -15,7 +15,7 @@
   "dependencies": {
     "inversify": "^5.0.1",
     "reflect-metadata": "^0.1.13",
-    "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#a13539636003f61893cd33b19464252486d650d2"
+    "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#530b3e9806e66743375e9a020fdd538d11b8af06"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.51",
