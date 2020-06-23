@@ -7,21 +7,24 @@ import Logger from '../../../src/utils/logger'
 import EventNotifierSNSMessageMapper from '../../../src/mappers/eventNotifierSNSMessageMapper'
 import { ArgCaptor1 } from 'ts-mockito/lib/capture/ArgCaptor'
 import { assert } from 'chai'
+import NotificationS3Service from '../../../src/services/notificationS3Service'
 
 describe('EventNotifierSNSMessageService', () => {
   let snsMessage: EventNotifierSNSMessage
   let eventNotifierSNSMessageMapper: EventNotifierSNSMessageMapper
   let logger: Logger
-
+  let notificationS3Service: NotificationS3Service
   let eventNotifierSNSMessageService: EventNotifierSNSMessageService
 
   before(() => {
     eventNotifierSNSMessageMapper = mock(eventNotifierSNSMessageMapper)
     logger = mock(Logger)
+    notificationS3Service = mock(notificationS3Service)
 
     eventNotifierSNSMessageService = new EventNotifierSNSMessageService(
       instance(logger),
-      instance(eventNotifierSNSMessageMapper)
+      instance(eventNotifierSNSMessageMapper),
+      instance(notificationS3Service)
     )
 
     snsMessage = generateEventNotifierSNSMessage()

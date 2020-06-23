@@ -6,6 +6,7 @@ import Logger from '../utils/logger'
 import EventNotifierSNSMessageMapper from '../mappers/eventNotifierSNSMessageMapper'
 import { SNSMessage } from 'aws-lambda'
 import { calcuateTimeDifferenceInMilliseconds } from '../helpers/dateTimeHelper'
+import NotificationS3Service from './notificationS3Service'
 
 export interface EventLogMessage {
   notification_received: Date
@@ -19,13 +20,16 @@ export default class EventNotifierSNSMessageService {
 
   public constructor(
     @inject(TYPES.Logger) private logger: Logger,
-    @inject(TYPES.EventNotifierSNSMessageMapper) private mapper: EventNotifierSNSMessageMapper
+    @inject(TYPES.EventNotifierSNSMessageMapper) private mapper: EventNotifierSNSMessageMapper,
+    @inject(TYPES.NotificationS3Service) private notificationS3Service: NotificationS3Service
   ) {}
 
-  public handleMessage(snsMessage: SNSMessage, timeNotificationReceived: Date): void {
+  public async handleMessage(snsMessage: SNSMessage, timeNotificationReceived: Date): Promise<void> {
     const message: EventNotifierSNSMessage = this.mapper.mapToSNSMessage(snsMessage.Message)
 
     this.logger.log(this.generateLogMessage(message, timeNotificationReceived))
+
+    await this.notificationS3Service.upload(message)
   }
 
   private generateLogMessage(message: EventNotifierSNSMessage, timeNotificationReceived: Date): EventLogMessage {

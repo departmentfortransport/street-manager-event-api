@@ -2,7 +2,7 @@
   "Records" : [
     {
       "Sns": {
-        "Message" : "{\"object_type\":\"PERMIT\",\"object_reference\":\"QRS1590571966998-01\",\"event_reference\":521516,\"event_type\":\"work-start\",\"event_time\":\"2020-06-02T08:48:00.000Z\", \"object_data\": {\"object_type\":\"PERMIT\"}}",
+        "Message" : "{\"object_type\":\"PERMIT\",\"object_reference\":\"QRS1590571966998-01\",\"event_reference\":521516,\"event_type\":\"WORK_START\",\"event_time\":\"2020-06-02T08:48:00.000Z\", \"object_data\": {\"object_type\":\"PERMIT\"}}",
         "Timestamp" : "1591091040000"
       }
     }

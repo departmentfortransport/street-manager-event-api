@@ -9,11 +9,15 @@
     "lint-fix": "tslint --project tslint.json --exclude 'prod_node_modules/**' --exclude 'node_modules/**' --fix",
     "test": "TZ=UTC npm run lint && nyc npm run test-unit",
     "test-unit": "TZ=UTC mocha 'tests/unit/**/*.ts' --require ts-node/register",
-    "local": "npm run build && sam local invoke --docker-network host"
+    "local": "npm run build && sam local invoke --docker-network host",
+    "test-integration": "TZ=UTC sam local invoke --docker-network host -e tests/fixtures/snsEvent.json && mocha 'tests/integration/**/*.ts' --require ts-node/register --exit --timeout 15000"
+
   },
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.703.0",
     "inversify": "^5.0.1",
+    "moment-timezone": "^0.5.31",
     "reflect-metadata": "^0.1.13",
     "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#530b3e9806e66743375e9a020fdd538d11b8af06"
   },
