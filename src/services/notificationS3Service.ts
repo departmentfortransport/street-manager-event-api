@@ -17,6 +17,8 @@ export default class NotificationS3Service {
   }
 
   private generateKeyPath(message: EventNotifierSNSMessage): string {
-    return `${this.NOTIFICATIONS_KEY}${message.object_type.toLocaleLowerCase()}_${message.object_reference}_${message.event_type.toLocaleLowerCase()}_event_${moment.tz(message.event_time, 'Europe/London').format('YYYY-MM-DD_HH-mm-ss-ms')}.json`
+    const prefix = `${this.NOTIFICATIONS_KEY}${message.object_type.toLocaleLowerCase()}_${message.object_reference}_${message.event_type.toLocaleLowerCase()}`
+    const timestamp: string = moment.tz(message.event_time, 'Europe/London').format('YYYY-MM-DD_HH-mm-ss-ms')
+    return `${prefix}_event_${timestamp}.json`
   }
 }

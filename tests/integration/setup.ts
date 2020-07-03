@@ -5,4 +5,4 @@ import { S3 } from 'aws-sdk'
 
 export const s3: S3 = iocContainer.get<S3>(TYPES.S3)
 export const bucket: string = iocContainer.get<string>(TYPES.NOTIFICATIONS_BUCKET)
-export const key: string = iocContainer.get<string>(TYPES.NOTIFICATIONS_KEY)
+export const key = 'notifications-integration-test/'
