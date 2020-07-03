@@ -1,0 +1,47 @@
+ARG NODE_BASE_IMAGE
+
+FROM $NODE_BASE_IMAGE AS base
+RUN apk upgrade --no-cache && \
+    mkdir -p /opt/app/dft-street-manager-event-subscriber
+
+WORKDIR /opt/app/dft-street-manager-event-subscriber
+
+ENTRYPOINT ["/sbin/tini", "--"]
+
+COPY package.json .
+
+COPY package-lock.json .
+
+FROM base AS dependencies
+
+RUN apk add --no-cache \
+      g++ \
+      git \
+      make \
+      openssh-client \
+      python \
+      zip
+
+COPY . .
+
+RUN mkdir ~/.ssh && \
+    ssh-keyscan github.com > ~/.ssh/known_hosts && \
+    cp .ssh/id_rsa ~/.ssh/id_rsa
+
+RUN export PATH=$PATH:/root/.local/bin
+
+RUN apk add --no-cache \
+      python3-dev \
+      docker-cli && \
+    pip3 install --upgrade pip && \
+    pip3 install aws-sam-cli --upgrade --user
+
+ENV PATH="/root/.local/bin:${PATH}"
+
+RUN docker --version
+
+RUN npm set progress=false && \
+    npm config set depth 0 && \
+    npm install \
+    npm run build && \
+    npm run test-integration-circle

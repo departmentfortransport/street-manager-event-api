@@ -58,9 +58,7 @@ aliases:
   - &run_integration_tests
     name: Test integration
     command: |
-      pip install --upgrade pip
-      pip install aws-sam-cli --upgrade --user
-      npm run test-integration
+      docker build --build-arg NODE_BASE_IMAGE=${NODE_BASE_IMAGE} . -f Dockerfile_event-subscriber-integration-tests
   - &ecr_login
     name: ECR login
     command: $(aws ecr get-login --no-include-email --region eu-west-2)
@@ -127,9 +125,9 @@ jobs:
       - checkout
       - run: *prepare_ssh_key
       - run: *assume_dev_admin_role
-      - run: *assume_integration-tests-csv-export_role_dev_account
-      - run: *run_integration_tests
       - run: *ecr_login
+      # - run: *assume_integration-tests-csv-export_role_dev_account
+      # - run: *run_integration_tests
       - run: *build_and_release
       - run: *cleanup
   deployment:

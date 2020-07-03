@@ -25,7 +25,7 @@ describe('S3Service', () => {
     let putObjectStub: sinon.SinonStub
 
     beforeEach(() => {
-      body = ''
+      body = 'some body'
 
       putObjectStub = sinon.stub()
       s3.putObject = putObjectStub
