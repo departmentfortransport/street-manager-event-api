@@ -42,6 +42,5 @@ RUN docker --version
 
 RUN npm set progress=false && \
     npm config set depth 0 && \
-    npm install \
-    npm run build && \
-    npm run test-integration-circle
+    npm install && \
+    npm run build
