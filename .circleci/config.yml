@@ -117,6 +117,8 @@ aliases:
           git push -u origin
         "
 version: 2.1
+orbs:
+  aws-serverless: circleci/aws-serverless@1.0.2
 jobs:
   build:
     machine:
@@ -126,8 +128,8 @@ jobs:
       - run: *prepare_ssh_key
       - run: *assume_dev_admin_role
       - run: *ecr_login
-      # - run: *assume_integration-tests-csv-export_role_dev_account
-      # - run: *run_integration_tests
+      - run: *assume_integration-tests-csv-export_role_dev_account
+      - run: *run_integration_tests
       - run: *build_and_release
       - run: *cleanup
   deployment:
