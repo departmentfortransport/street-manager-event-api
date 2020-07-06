@@ -11,7 +11,7 @@
     "test-unit": "TZ=UTC mocha 'tests/unit/**/*.ts' --require ts-node/register",
     "local": "npm run build && sam local invoke --docker-network host",
     "test-integration": "TZ=UTC NOTIFICATIONS_KEY=notifications-integration-test/ sam local invoke --docker-network host -e tests/fixtures/snsEvent.json && mocha 'tests/integration/**/*.ts' --require ts-node/register --exit --timeout 15000",
-    "test-integration-circle": "TZ=UTC NOTIFICATIONS_KEY=notifications-integration-test/ sam local invoke --debug -e tests/fixtures/snsEvent.json && mocha 'tests/integration/**/*.ts' --require ts-node/register --exit --timeout 15000"
+    "test-integration-circle": "TZ=UTC NOTIFICATIONS_KEY=notifications-integration-test/ mocha 'tests/integration/**/*.ts' --require ts-node/register --exit --timeout 15000"
   },
   "license": "MIT",
   "dependencies": {
