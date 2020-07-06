@@ -60,12 +60,11 @@ aliases:
     command: |
       docker build --build-arg NODE_BASE_IMAGE=${NODE_BASE_IMAGE} . -f Dockerfile_event-subscriber-integration-tests -t event-subscriber:integration-test
       docker run \
-      -v /tmp/integration-test:/host \
-      -it event-subscriber:integration-test \
-      /bin/sh -l -c "ls && cp -r dist /host && cp -r node_modules /host && cp template.yml /host && cp tests/fixtures/snsEvent.json /host"
-      cd /tmp/integration-test
-      sam local invoke --debug -e template.yml
-      cd -
+        -v /tmp/integration-test:/host \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -it event-subscriber:integration-test \
+        /bin/sh -l -c "ls && cp -r dist /host && cp -r node_modules /host && cp template.yml /host && cp tests/fixtures/snsEvent.json /host"
+
       docker run -it event-subscriber:integration-test /bin/sh -l -c "npm run test-integration"
   - &run_integration_tests
     name: Test integration
