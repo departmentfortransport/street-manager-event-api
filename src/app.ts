@@ -5,8 +5,8 @@ import EventNotifierSNSMessageService from './services/eventNotifierSNSMessageSe
 
 const eventNotifierSNSMessageService: EventNotifierSNSMessageService = iocContainer.get<EventNotifierSNSMessageService>(TYPES.EventNotifierSNSMessageService)
 
-export const handler: SNSHandler = (event: SNSEvent): void => {
+export const handler: SNSHandler = async (event: SNSEvent): Promise<void> => {
   const snsMessage: SNSMessage = event.Records[0].Sns
 
-  return eventNotifierSNSMessageService.handleMessage(snsMessage, new Date())
+  return await eventNotifierSNSMessageService.handleMessage(snsMessage, new Date())
 }

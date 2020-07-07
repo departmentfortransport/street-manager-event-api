@@ -13,5 +13,10 @@ Resources:
       Description: A Lambda function that logs the time to notification from an SNS mesage
       Runtime: nodejs10.x
       Handler: dist/app.handler
+      Environment:
+        Variables:
+          NOTIFICATIONS_BUCKET:
+          NOTIFICATIONS_KEY:
+          TIMEOUT_S3:
       MemorySize: 128
       Timeout: 25 # Chosen to be less than the default SQS Visibility Timeout of 30 seconds

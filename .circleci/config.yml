@@ -45,6 +45,40 @@ aliases:
       echo "export AWS_ACCESS_KEY_ID=$(echo $TOKEN | python -c 'import json,sys;print json.load(sys.stdin)["Credentials"]["AccessKeyId"]' 2> /dev/null)" >> $BASH_ENV
       echo "export AWS_SECRET_ACCESS_KEY=$(echo $TOKEN | python -c 'import json,sys;print json.load(sys.stdin)["Credentials"]["SecretAccessKey"]' 2> /dev/null)" >> $BASH_ENV
       echo "export AWS_SESSION_TOKEN=$(echo $TOKEN | python -c 'import json,sys;print json.load(sys.stdin)["Credentials"]["SessionToken"]' 2> /dev/null)" >> $BASH_ENV
+  - &assume_integration-tests-csv-export_role_dev_account
+    name: Assume integration-tests-csv-export role on dev account
+    command: |
+      TOKEN=$(aws sts assume-role \
+        --role-arn arn:aws:iam::454455319752:role/integration-tests-csv-export \
+        --role-session-name "$(head /dev/urandom | LC_CTYPE=C tr -dc A-Za-z0-9 | head -c 18 ; echo '')"\
+        )
+      echo "export AWS_ACCESS_KEY_ID=$(echo $TOKEN | python -c 'import json,sys;print json.load(sys.stdin)["Credentials"]["AccessKeyId"]' 2> /dev/null)" >> $BASH_ENV
+      echo "export AWS_SECRET_ACCESS_KEY=$(echo $TOKEN | python -c 'import json,sys;print json.load(sys.stdin)["Credentials"]["SecretAccessKey"]' 2> /dev/null)" >> $BASH_ENV
+      echo "export AWS_SESSION_TOKEN=$(echo $TOKEN | python -c 'import json,sys;print json.load(sys.stdin)["Credentials"]["SessionToken"]' 2> /dev/null)" >> $BASH_ENV
+  - &test
+    name: Test
+    command: |
+      docker build --build-arg NODE_BASE_IMAGE=${NODE_BASE_IMAGE} . -t event-subscriber:test-image --target dependencies --no-cache --pull
+  - &build_integration_test_services
+    name: Build integration test services
+    command: |
+      docker run \
+        -v /tmp/integration-test:/host \
+        -it event-subscriber:test-image \
+        /bin/sh -l -c "cp -r dist /host && cp -r node_modules /host && cp template.yml /host && cp tests/fixtures/snsEvent.json /host"
+      cd /tmp/integration-test
+      sam local invoke --debug -e snsEvent.json
+      cd -
+  - &run_integration_tests
+    name: Test integration
+    command: |
+      docker run \
+        -e NOTIFICATIONS_BUCKET=$NOTIFICATIONS_BUCKET \
+        -e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
+        -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+        -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+        -it event-subscriber:test-image \
+        /bin/sh -l -c "npm run test-integration-circle"
   - &ecr_login
     name: ECR login
     command: $(aws ecr get-login --no-include-email --region eu-west-2)
@@ -53,7 +87,7 @@ aliases:
     command: |
       source $BASH_ENV
       mkdir /tmp/lambda
-      docker build --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} --build-arg NODE_BASE_IMAGE=${NODE_BASE_IMAGE} -t event-subscriber:${CIRCLE_SHA1} . -f Dockerfile_event-subscriber
+      docker build --build-arg CIRCLE_SHA1=${CIRCLE_SHA1} --build-arg NODE_BASE_IMAGE=${NODE_BASE_IMAGE} -t event-subscriber:${CIRCLE_SHA1} .
       docker run \
         -v /tmp/lambda:/host \
         -it event-subscriber:${CIRCLE_SHA1} \
@@ -103,8 +137,24 @@ aliases:
           git push -u origin
         "
 version: 2.1
+orbs:
+  sam: circleci/aws-sam-serverless@1.0.1
 jobs:
   build:
+    machine:
+      image: circleci/classic:edge
+    executor: sam/default
+    steps:
+      - checkout
+      - run: *prepare_ssh_key
+      - run: *assume_dev_admin_role
+      - run: *ecr_login
+      - run: *test
+      - sam/install
+      - run: *assume_integration-tests-csv-export_role_dev_account
+      - run: *build_integration_test_services
+      - run: *run_integration_tests
+  release:
     machine:
       image: circleci/classic:edge
     steps:
@@ -139,9 +189,12 @@ workflows:
   coverage:
     jobs:
       - build
-      - deployment:
+      - release:
           requires:
             - build
+      - deployment:
+          requires:
+            - release
           filters:
             branches:
               only:
