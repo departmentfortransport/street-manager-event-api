@@ -39,7 +39,13 @@ export function generateEventNotifierWorkData(): EventNotifierWorkData {
     work_status_ref: 'planned',
     activity_type: 'Core Sampling',
     is_ttro_required: 'No',
-    works_location_type: 'some works location type'
+    works_location_type: 'some works location type',
+    permit_conditions: 'NCT01a',
+    road_category: '4',
+    is_traffic_sensitive: 'No',
+    is_deemed: 'Yes',
+    permit_status: 'granted',
+    town: 'Some Town'
   }
 }
 
