@@ -17,7 +17,6 @@
   "dependencies": {
     "aws-sdk": "^2.703.0",
     "inversify": "^5.0.1",
-    "lodash": "^4.17.20",
     "moment-timezone": "^0.5.31",
     "reflect-metadata": "^0.1.13",
     "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#acaa11550dd35a137767a18fe85d12ac192bb1f9"
@@ -27,6 +26,7 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.1",
     "chai": "^4.2.0",
+    "lodash": "^4.17.20",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
     "rimraf": "^3.0.2",
