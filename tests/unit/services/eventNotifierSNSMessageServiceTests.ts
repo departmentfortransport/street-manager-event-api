@@ -35,7 +35,7 @@ describe('EventNotifierSNSMessageService', () => {
 
       when(eventNotifierSNSMessageMapper.mapToSNSMessage(messageJsonString)).thenReturn(message)
 
-      eventNotifierSNSMessageService.handleMessage(generateSNSMessage(messageJsonString), receivedDate)
+      await eventNotifierSNSMessageService.handleMessage(generateSNSMessage(messageJsonString), receivedDate)
 
       const argCaptor: ArgCaptor1<EventLogMessage> = capture<EventLogMessage>(logger.log)
       const [logMessage] = argCaptor.first()

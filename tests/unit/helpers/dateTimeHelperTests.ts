@@ -1,11 +1,11 @@
 import 'mocha'
-import { calcuateTimeDifferenceInMilliseconds } from '../../../src/helpers/dateTimeHelper'
 import { assert } from 'chai'
+import { calcuateTimeDifferenceInMilliseconds } from '../../../src/helpers/dateTimeHelper'
 
 describe('dateTimeHelper', () => {
 
   describe('calcuateTimeDifferenceInMilliseconds', () => {
-    it('should return the time difference in milliseconds', async () => {
+    it('should return the time difference in milliseconds', () => {
       const timeOfEvent: Date = new Date(1970, 1, 1, 5, 4, 3)
       const timeMessageReceived: Date = new Date(1970, 1, 1, 5, 5, 3)
 
