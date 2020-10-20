@@ -5,6 +5,10 @@ import EventNotifierSNSMessageService from './services/eventNotifierSNSMessageSe
 
 const eventNotifierSNSMessageService: EventNotifierSNSMessageService = iocContainer.get<EventNotifierSNSMessageService>(TYPES.EventNotifierSNSMessageService)
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled rejection at: ', promise, `\nReason: ${reason}`)
+})
+
 export const handler: SNSHandler = async (event: SNSEvent): Promise<void> => {
   const snsMessage: SNSMessage = event.Records[0].Sns
 
