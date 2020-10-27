@@ -154,7 +154,7 @@ aliases:
         "
 version: 2.1
 orbs:
-  sam: circleci/aws-sam-serverless@1.0.1
+  sam: circleci/aws-sam-serverless@2.0.0
 jobs:
   build:
     machine:
@@ -166,12 +166,11 @@ jobs:
       - run: *assume_dev_admin_role
       - run: *ecr_login
       - run: *test
-      # Issue with install of AWS SAM in orb: https://github.com/CircleCI-Public/aws-sam-serverless-orb/issues/20
-      # Unresolved as of 08/09/20. Please check status of issue by 18/08/20 and uncomment integration tests again
-      # - sam/install
-      # - run: *assume_integration-tests-csv-export_role_dev_account
-      # - run: *build_integration_test_services
-      # - run: *run_integration_tests
+      - run: *assume_integration-tests-csv-export_role_dev_account
+      - sam/install:
+          python_version: "3.6.0"
+      - run: *build_integration_test_services
+      - run: *run_integration_tests
   release:
     machine:
       image: circleci/classic:edge
