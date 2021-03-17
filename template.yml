@@ -5,7 +5,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   eventSubscriber
 Transform:
-- AWS::Serverless-2016-10-31
+  - AWS::Serverless-2016-10-31
 Resources:
   EventSubscriber:
     Type: AWS::Serverless::Function
