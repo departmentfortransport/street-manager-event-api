@@ -72,6 +72,17 @@ aliases:
     name: Test
     command: |
       docker build --build-arg NODE_BASE_IMAGE=${NODE_BASE_IMAGE} . -t event-subscriber:test-image --target dependencies --no-cache --pull
+  - &install_sam_cli
+    name: Install SAM CLI
+    command: |
+      git clone git://github.com/pyenv/pyenv-update.git $(pyenv root)/plugins/pyenv-update
+      pyenv update
+      pyenv install 3.6.0
+      pyenv global 3.6.0
+      pip3 install aws-sam-cli==1.15.0 --user
+      echo 'export PATH=$PATH:~/.local/bin' >>$BASH_ENV
+      export PATH=$PATH:~/.local/bin
+      sam --version
   - &build_integration_test_services
     name: Build integration test services
     command: |
@@ -167,8 +178,7 @@ jobs:
       - run: *ecr_login
       - run: *test
       - run: *assume_integration-tests-csv-export_role_dev_account
-      - sam/install:
-          python_version: "3.6.0"
+      - run: *install_sam_cli
       - run: *build_integration_test_services
       - run: *run_integration_tests
   release:
