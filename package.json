@@ -22,7 +22,7 @@
     "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#d86173b7a4d0f237103332d252e59a9f5142a91c"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.51",
+    "@types/aws-lambda": "^8.10.75",
     "@types/mocha": "^8.2.2",
     "@types/node": "^13.11.1",
     "chai": "^4.3.4",
