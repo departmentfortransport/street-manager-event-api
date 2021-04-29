@@ -103,9 +103,21 @@ aliases:
         -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
         -it event-subscriber:test-image \
         /bin/sh -l -c "npm run test-integration-circle"
-  - &ecr_login
-    name: ECR login
-    command: $(aws ecr get-login --no-include-email --region eu-west-2)
+  - &ecr_login_dev
+    name: ECR login Dev
+    command: aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${AWS_ACC_ID_DEV}.dkr.ecr.eu-west-2.amazonaws.com
+
+  - &ecr_login_preview
+    name: ECR login Preview
+    command: aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${AWS_ACC_ID_PREVIEW}.dkr.ecr.eu-west-2.amazonaws.com
+
+  - &ecr_login_preprod
+    name: ECR login Preprod
+    command: aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${AWS_ACC_ID_PREPROD}.dkr.ecr.eu-west-2.amazonaws.com
+
+  - &ecr_login_prod
+    name: ECR login Production
+    command: aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${AWS_ACC_ID_PROD}.dkr.ecr.eu-west-2.amazonaws.com
   - &build_and_release
     name: Build and release
     command: |
@@ -159,7 +171,7 @@ aliases:
           git clone git@github.com:departmentfortransport/street-manager-$NAMESPACE.git
           cd street-manager-$NAMESPACE
           /usr/local/bin/yq w -i config.yaml apps.event_subscriber.tag $CIRCLE_SHA1
-          git diff --exit-code
+          git diff --exit-code || true
           git commit -am \"Bumping event-subscriber version.\"
           git push -u origin
         "
@@ -169,13 +181,13 @@ orbs:
 jobs:
   build:
     machine:
-      image: circleci/classic:edge
+      image: ubuntu-2004:202101-01
     executor: sam/default
     steps:
       - checkout
       - run: *prepare_ssh_key
       - run: *assume_dev_admin_role
-      - run: *ecr_login
+      - run: *ecr_login_dev
       - run: *test
       - run: *assume_integration-tests-csv-export_role_dev_account
       - run: *install_sam_cli
@@ -183,16 +195,17 @@ jobs:
       - run: *run_integration_tests
   release:
     machine:
-      image: circleci/classic:edge
+      image: ubuntu-2004:202101-01
     steps:
       - checkout
       - run: *prepare_ssh_key
       - run: *assume_dev_admin_role
-      - run: *ecr_login
+      - run: *ecr_login_dev
       - run: *build_and_release
       - run: *cleanup
   deployment:
-    machine: true
+    machine:
+      image: ubuntu-2004:202101-01
     environment:
       CLUSTER_NAME: dev-b.stwrks-dev.net
       NAMESPACE: int
@@ -200,20 +213,21 @@ jobs:
       - run: *prepare_ssh_key
       - run: *release_to_int
   tagged_build:
-    machine: true
+    machine:
+      image: ubuntu-2004:202101-01
     steps:
       - checkout
       - run: *assume_dev_admin_role
-      - run: *ecr_login
+      - run: *ecr_login_dev
       - run: *push_dev_bucket
       - run: *assume_preview_admin_role
-      - run: *ecr_login
+      - run: *ecr_login_preview
       - run: *push_preview_bucket
       - run: *assume_preprod_admin_role
-      - run: *ecr_login
+      - run: *ecr_login_preprod
       - run: *push_preprod_bucket
       - run: *assume_prod_admin_role
-      - run: *ecr_login
+      - run: *ecr_login_prod
       - run: *push_prod_bucket
 workflows:
   coverage:
