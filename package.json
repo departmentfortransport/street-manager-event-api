@@ -15,9 +15,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.888.0",
+    "aws-sdk": "^2.935.0",
     "inversify": "^5.0.5",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.33",
     "reflect-metadata": "^0.1.13",
     "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#e4157cdb1b485fe32aa275169de1be64ce36b92b"
   },
