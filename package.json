@@ -19,7 +19,7 @@
     "inversify": "^5.0.5",
     "moment-timezone": "^0.5.33",
     "reflect-metadata": "^0.1.13",
-    "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#e4157cdb1b485fe32aa275169de1be64ce36b92b"
+    "street-manager-data": "git+ssh://git@github.com:departmentfortransport/street-manager-data#438d832780f06bd9c5340272dd916209d13599f9"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.51",
